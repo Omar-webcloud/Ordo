@@ -1,9 +1,9 @@
-````markdown
+
 # Ordo
 
-**Ordo** is a minimalistic task engine for tracking, managing, and assigning tasks.
+Ordo is a minimalistic task engine for tracking, managing, and assigning tasks.
 
-It provides a production-style REST API for team task management, inspired by tools like **Trello** and **Linear**.
+It provides a production-style REST API for team task management, inspired by tools like *Trello* and *Linear*.
 
 ## Features
 
@@ -24,7 +24,7 @@ Users can:
 
 ## Project Structure
 
-```text
+
 ordo/
 │
 ├── src/
@@ -76,7 +76,7 @@ ordo/
 └── README.md
 ````
 
----
+
 
 # Tech Stack
 
@@ -110,7 +110,7 @@ ordo/
 
 ## User
 
-```text
+
 User
 ├── name
 ├── email
@@ -122,7 +122,7 @@ User
 
 ### Roles
 
-```text
+
 user
 admin
 ```
@@ -145,7 +145,7 @@ Project
 
 ## Task
 
-```text
+
 Task
 ├── title
 ├── description
@@ -161,7 +161,7 @@ Task
 
 ### Status
 
-```text
+
 todo
 in_progress
 completed
@@ -169,7 +169,7 @@ completed
 
 ### Priority
 
-```text
+
 low
 medium
 high
@@ -179,7 +179,7 @@ high
 
 ## Comment
 
-```text
+
 Comment
 ├── task
 ├── author
@@ -193,7 +193,7 @@ Comment
 
 All API endpoints are versioned under:
 
-```text
+
 /api/v1
 ```
 
@@ -235,7 +235,7 @@ All API endpoints are versioned under:
 
 Protected endpoints use JWT-based authentication.
 
-```text
+
 Client
   │
   │ Authorization: Bearer <token>
@@ -328,7 +328,7 @@ Ordo aims to maintain a consistent response structure.
 
 ## Success
 
-```json
+
 {
   "success": true,
   "message": "Task created successfully",
@@ -340,7 +340,7 @@ Ordo aims to maintain a consistent response structure.
 
 ## Error
 
-```json
+
 {
   "success": false,
   "message": "Task not found",
@@ -367,5 +367,4 @@ Ordo is being built as a **production-style backend project** to demonstrate pra
 
 The goal is not just to build a CRUD API, but to understand how a maintainable backend application is structured and developed.
 
-```
 ```
