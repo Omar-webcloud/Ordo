@@ -25,6 +25,7 @@ Users can:
 ## Project Structure
 
 
+```text
 ordo/
 │
 ├── src/
@@ -74,7 +75,7 @@ ordo/
 ├── docker-compose.yml
 ├── package.json
 └── README.md
-````
+```
 
 
 
@@ -111,6 +112,7 @@ ordo/
 ## User
 
 
+```text
 User
 ├── name
 ├── email
@@ -123,6 +125,7 @@ User
 ### Roles
 
 
+```text
 user
 admin
 ```
@@ -146,6 +149,7 @@ Project
 ## Task
 
 
+```text
 Task
 ├── title
 ├── description
@@ -162,6 +166,7 @@ Task
 ### Status
 
 
+```text
 todo
 in_progress
 completed
@@ -170,6 +175,7 @@ completed
 ### Priority
 
 
+```text
 low
 medium
 high
@@ -180,6 +186,7 @@ high
 ## Comment
 
 
+```text
 Comment
 ├── task
 ├── author
@@ -194,6 +201,7 @@ Comment
 All API endpoints are versioned under:
 
 
+```text
 /api/v1
 ```
 
@@ -236,6 +244,7 @@ All API endpoints are versioned under:
 Protected endpoints use JWT-based authentication.
 
 
+```text
 Client
   │
   │ Authorization: Bearer <token>
@@ -329,6 +338,7 @@ Ordo aims to maintain a consistent response structure.
 ## Success
 
 
+```json
 {
   "success": true,
   "message": "Task created successfully",
@@ -341,6 +351,7 @@ Ordo aims to maintain a consistent response structure.
 ## Error
 
 
+```json
 {
   "success": false,
   "message": "Task not found",
@@ -367,4 +378,3 @@ Ordo is being built as a **production-style backend project** to demonstrate pra
 
 The goal is not just to build a CRUD API, but to understand how a maintainable backend application is structured and developed.
 
-```
