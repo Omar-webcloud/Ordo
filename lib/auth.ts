@@ -7,8 +7,15 @@ export const setAuth = (
   token: string,
   user: User
 ) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  localStorage.setItem(
+    USER_KEY,
+    JSON.stringify(user)
+  );
 };
 
 export const getToken = () => {
@@ -42,6 +49,10 @@ export const isAuthenticated = () => {
 };
 
 export const logout = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
 };
