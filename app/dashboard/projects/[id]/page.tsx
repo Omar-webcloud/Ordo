@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import Button from "../../../../components/ui/Button";
+
 type ProjectPageProps = {
   params: Promise<{
     id: string;
@@ -46,9 +48,7 @@ export default async function ProjectPage({
         <div className="mt-10 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Tasks</h2>
 
-          <button className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium hover:bg-blue-500">
-            + New Task
-          </button>
+          <Button>+ New Task</Button>
         </div>
 
         <div className="mt-5 rounded-xl border border-dashed border-slate-700 p-12 text-center">

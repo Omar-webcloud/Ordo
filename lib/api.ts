@@ -14,6 +14,9 @@ type ApiErrorResponse = {
   statusCode?: number;
 };
 
+// Import user type for type safety
+import type { User } from "../types/user";
+
 class ApiError extends Error {
   statusCode?: number;
 
@@ -79,7 +82,7 @@ export const registerUser = async (data: {
   password: string;
 }) => {
   return request<{
-    user: import("../types/user").User;
+    user: User;
     token: string;
   }>("/auth/register", {
     method: "POST",
@@ -92,7 +95,7 @@ export const loginUser = async (data: {
   password: string;
 }) => {
   return request<{
-    user: import("../types/user").User;
+    user: User;
     token: string;
   }>("/auth/login", {
     method: "POST",
@@ -102,7 +105,7 @@ export const loginUser = async (data: {
 
 export const getCurrentUser = async () => {
   return request<{
-    user: import("../types/user").User;
+    user: User;
   }>("/auth/me");
 };
 

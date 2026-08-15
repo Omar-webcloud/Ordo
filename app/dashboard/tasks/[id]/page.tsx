@@ -14,7 +14,7 @@ export default async function TaskPage({
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-slate-800">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <Link href="/" className="text-2xl font-bold">
             Ordo
           </Link>
@@ -28,7 +28,7 @@ export default async function TaskPage({
         </div>
       </header>
 
-      <section className="mx-auto max-w-5xl px-6 py-10">
+      <section className="mx-auto max-w-7xl px-6 py-10">
         <p className="text-sm text-slate-500">
           Task ID: {id}
         </p>

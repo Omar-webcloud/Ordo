@@ -27,12 +27,13 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <main className="min-h-screen bg-slate-950 text-white">
-        <header className="border-b border-slate-800">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+      <main className="min-h-screen w-full bg-slate-950 text-white">
+        {/* Header */}
+        <header className="w-full border-b border-slate-800">
+          <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
             <Link
               href="/"
-              className="text-2xl font-bold"
+              className="text-2xl font-bold tracking-tight"
             >
               Ordo
             </Link>
@@ -43,8 +44,9 @@ export default function DashboardPage() {
               </span>
 
               <button
+                type="button"
                 onClick={handleLogout}
-                className="rounded-lg border border-slate-700 px-4 py-2 text-sm transition hover:bg-slate-900"
+                className="flex h-10 min-w-[80px] items-center justify-center rounded-lg border border-slate-700 px-4 text-sm font-medium leading-none transition hover:bg-slate-900"
               >
                 Logout
               </button>
@@ -52,77 +54,90 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        <section className="mx-auto max-w-7xl px-6 py-10">
-          <div>
-            <h1 className="text-3xl font-bold">
-              Dashboard
-            </h1>
+        {/* Centered Content */}
+        <div className="flex w-full justify-center">
+          <section className="w-full max-w-6xl px-6 py-10 sm:py-12">
+            {/* Page heading */}
+            <div>
+              <h1 className="text-3xl font-bold leading-tight tracking-tight">
+                Dashboard
+              </h1>
 
-            <p className="mt-2 text-slate-400">
-              Overview of your projects and tasks.
-            </p>
-          </div>
-
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-              <p className="text-sm text-slate-400">
-                Projects
-              </p>
-
-              <p className="mt-2 text-3xl font-bold">
-                0
+              <p className="mt-2 text-sm leading-6 text-slate-400 sm:text-base">
+                Overview of your projects and tasks.
               </p>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-              <p className="text-sm text-slate-400">
-                Active Tasks
-              </p>
+            {/* Stats */}
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+              <div className="flex min-h-[140px] flex-col justify-center rounded-xl border border-slate-800 bg-slate-900 px-6 py-5">
+                <p className="text-sm text-slate-400">
+                  Projects
+                </p>
 
-              <p className="mt-2 text-3xl font-bold">
-                0
-              </p>
+                <p className="mt-3 text-3xl font-bold leading-none">
+                  0
+                </p>
+              </div>
+
+              <div className="flex min-h-[140px] flex-col justify-center rounded-xl border border-slate-800 bg-slate-900 px-6 py-5">
+                <p className="text-sm text-slate-400">
+                  Active Tasks
+                </p>
+
+                <p className="mt-3 text-3xl font-bold leading-none">
+                  0
+                </p>
+              </div>
+
+              <div className="flex min-h-[140px] flex-col justify-center rounded-xl border border-slate-800 bg-slate-900 px-6 py-5">
+                <p className="text-sm text-slate-400">
+                  Completed
+                </p>
+
+                <p className="mt-3 text-3xl font-bold leading-none">
+                  0
+                </p>
+              </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-              <p className="text-sm text-slate-400">
-                Completed
-              </p>
+            {/* Projects */}
+            <section className="mt-12">
+              <div className="flex items-end justify-between gap-6">
+                <div>
+                  <h2 className="text-xl font-semibold leading-tight">
+                    Your Projects
+                  </h2>
 
-              <p className="mt-2 text-3xl font-bold">
-                0
-              </p>
-            </div>
-          </div>
+                  <p className="mt-2 text-sm leading-5 text-slate-500">
+                    Projects you're currently working on.
+                  </p>
+                </div>
 
-          <div className="mt-10">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">
-                Your Projects
-              </h2>
+                <Link
+                  href="/dashboard/projects"
+                  className="shrink-0 pb-0.5 text-sm font-medium text-blue-500 transition hover:text-blue-400"
+                >
+                  View all
+                </Link>
+              </div>
 
-              <Link
-                href="/dashboard/projects"
-                className="text-sm text-blue-500 hover:text-blue-400"
-              >
-                View all
-              </Link>
-            </div>
+              {/* Empty state */}
+              <div className="mt-6 flex min-h-[200px] w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 px-6 py-10 text-center">
+                <p className="text-sm leading-5 text-slate-400">
+                  You don't have any projects yet.
+                </p>
 
-            <div className="mt-5 rounded-xl border border-dashed border-slate-700 p-10 text-center">
-              <p className="text-slate-400">
-                You don't have any projects yet.
-              </p>
-
-              <Link
-                href="/dashboard/projects"
-                className="mt-4 inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium hover:bg-blue-500"
-              >
-                Create Project
-              </Link>
-            </div>
-          </div>
-        </section>
+                <Link
+                  href="/dashboard/projects"
+                  className="mt-5 flex h-11 items-center justify-center rounded-lg bg-blue-600 px-6 text-sm font-medium leading-none transition hover:bg-blue-500"
+                >
+                  Create Project
+                </Link>
+              </div>
+            </section>
+          </section>
+        </div>
       </main>
     </ProtectedRoute>
   );

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import Button from "../../../components/ui/Button";
+
 export default function ProjectsPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -27,9 +29,7 @@ export default function ProjectsPage() {
             </p>
           </div>
 
-          <button className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium hover:bg-blue-500">
-            + New Project
-          </button>
+          <Button>+ New Project</Button>
         </div>
 
         <div className="mt-8 rounded-xl border border-dashed border-slate-700 p-12 text-center">
