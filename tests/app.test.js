@@ -9,8 +9,8 @@ describe("Ordo API Health & General Endpoints", () => {
     expect(res.body.message).toBe("Ordo API is running");
   });
 
-  it("GET /non-existent-route should return 404", async () => {
-    const res = await request(app).get("/api/v1/non-existent");
+  it("GET /api/unknown-route should return 404", async () => {
+    const res = await request(app).get("/api/unknown-route");
     expect(res.statusCode).toBe(404);
     expect(res.body.success).toBe(false);
     expect(res.body.statusCode).toBe(404);

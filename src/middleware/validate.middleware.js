@@ -18,9 +18,15 @@ const validate = (schema) => {
         throw new ApiError(400, "Validation failed", errors);
       }
 
-      req.body = result.data.body;
-      req.params = result.data.params;
-      req.query = result.data.query;
+      if (result.data.body) {
+        req.body = result.data.body;
+      }
+      if (result.data.params && req.params) {
+        Object.assign(req.params, result.data.params);
+      }
+      if (result.data.query && req.query) {
+        Object.assign(req.query, result.data.query);
+      }
 
       next();
     } catch (error) {
