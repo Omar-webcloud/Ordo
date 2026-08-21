@@ -18,7 +18,7 @@ export function getTokenFromRequest(req: NextRequest): string | null {
   return auth.split(" ")[1];
 }
 
-export function apiSuccess(data: object, message: string, status = 200) {
+export function apiSuccess(data: any = null, message = "Success", status = 200) {
   return Response.json({ success: true, message, data }, { status });
 }
 
