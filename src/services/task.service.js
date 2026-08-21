@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 import Task from "../models/Task.js";
 import Project from "../models/Project.js";
 import ApiError from "../utils/ApiError.js";
@@ -30,15 +28,18 @@ export const createTask = async (
     createdBy: userId,
   });
 
-  return task;
+  return await Task.findById(task._id)
+    .populate("assignedTo", "name email")
+    .populate("createdBy", "name email");
 };
 
 /**
- * Get all tasks belonging to a project
+ * Get all tasks belonging to a project with filtering & search support
  */
 export const getProjectTasks = async (
   projectId,
-  userId
+  userId,
+  query = {}
 ) => {
   const project = await Project.findOne({
     _id: projectId,
@@ -52,12 +53,37 @@ export const getProjectTasks = async (
     );
   }
 
-  const tasks = await Task.find({
-    project: projectId,
-  })
+  const filter = { project: projectId };
+
+  if (query.status) {
+    filter.status = query.status;
+  }
+
+  if (query.priority) {
+    filter.priority = query.priority;
+  }
+
+  if (query.assignedTo) {
+    filter.assignedTo = query.assignedTo;
+  }
+
+  if (query.search) {
+    filter.$or = [
+      { title: { $regex: query.search, $options: "i" } },
+      { description: { $regex: query.search, $options: "i" } },
+    ];
+  }
+
+  const page = Math.max(1, parseInt(query.page) || 1);
+  const limit = Math.max(1, Math.min(100, parseInt(query.limit) || 50));
+  const skip = (page - 1) * limit;
+
+  const tasks = await Task.find(filter)
     .populate("assignedTo", "name email")
     .populate("createdBy", "name email")
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .skip(query.page ? skip : 0)
+    .limit(query.limit ? limit : 0);
 
   return tasks;
 };
@@ -137,7 +163,9 @@ export const updateTask = async (
 
   await task.save();
 
-  return task;
+  return await Task.findById(taskId)
+    .populate("assignedTo", "name email")
+    .populate("createdBy", "name email");
 };
 
 /**

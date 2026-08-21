@@ -30,7 +30,8 @@ export const getProjectTasks = async (req, res, next) => {
   try {
     const tasks = await taskService.getProjectTasks(
       req.params.projectId,
-      req.user.id
+      req.user.id,
+      req.query
     );
 
     res.status(200).json({

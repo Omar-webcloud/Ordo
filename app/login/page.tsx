@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import { setAuth } from "../../lib/auth";
-import { mockLogin } from "../../lib/mockAuth";
+import { login } from "../../lib/dataService";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,30 +17,26 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setError("");
     setLoading(true);
 
     try {
-      const result = mockLogin(email, password);
-
-      setAuth(result.token, result.user);
-
+      await login(email, password);
       router.push("/dashboard");
       router.refresh();
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Unable to sign in"
-      );
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : "Unable to sign in");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUseDemo = () => {
+    setEmail("demo@ordo.dev");
+    setPassword("password123");
   };
 
   return (
@@ -51,7 +46,7 @@ export default function LoginPage() {
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-700/50 bg-slate-900/60 p-8 backdrop-blur-xl shadow-2xl">
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center">
           <Link
             href="/"
             className="inline-block text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 hover:opacity-80 transition-opacity"
@@ -59,7 +54,7 @@ export default function LoginPage() {
             Ordo.
           </Link>
 
-          <h1 className="mt-8 text-2xl font-bold tracking-tight text-white">
+          <h1 className="mt-6 text-2xl font-bold tracking-tight text-white">
             Welcome back
           </h1>
 
@@ -68,19 +63,14 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             id="email"
             label="Email"
             type="email"
             placeholder="you@example.com"
             value={email}
-            onChange={(event) =>
-              setEmail(event.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
@@ -90,14 +80,12 @@ export default function LoginPage() {
             type="password"
             placeholder="••••••••"
             value={password}
-            onChange={(event) =>
-              setPassword(event.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           {error && (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 backdrop-blur-sm animate-pulse">
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-xs text-red-400 backdrop-blur-sm">
               {error}
             </div>
           )}
@@ -105,34 +93,39 @@ export default function LoginPage() {
           <Button
             type="submit"
             loading={loading}
-            className="w-full h-12 rounded-xl bg-blue-600 font-medium text-white shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)] transition-all hover:bg-blue-500 hover:shadow-[0_0_25px_-5px_rgba(37,99,235,0.6)] hover:-translate-y-0.5"
+            className="w-full h-11 rounded-xl bg-blue-600 font-semibold text-white shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)] transition-all hover:bg-blue-500 hover:shadow-[0_0_25px_-5px_rgba(37,99,235,0.6)]"
           >
             Sign In
           </Button>
         </form>
 
-        <div className="mt-8 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 backdrop-blur-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-            Demo credentials
-          </p>
+        <div className="mt-6 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+              Demo credentials
+            </p>
+            <button
+              type="button"
+              onClick={handleUseDemo}
+              className="text-xs text-blue-400 hover:text-blue-300 underline font-medium cursor-pointer"
+            >
+              Fill Credentials
+            </button>
+          </div>
 
-          <div className="flex flex-col gap-1.5">
-            <p className="text-sm text-slate-400 flex justify-between">
+          <div className="flex flex-col gap-1 text-xs">
+            <div className="flex justify-between text-slate-400">
               <span>Email:</span>
-              <span className="text-slate-200 font-mono bg-slate-800/50 px-2 py-0.5 rounded">
-                demo@ordo.dev
-              </span>
-            </p>
-            <p className="text-sm text-slate-400 flex justify-between">
+              <span className="text-slate-200 font-mono">demo@ordo.dev</span>
+            </div>
+            <div className="flex justify-between text-slate-400">
               <span>Password:</span>
-              <span className="text-slate-200 font-mono bg-slate-800/50 px-2 py-0.5 rounded">
-                password123
-              </span>
-            </p>
+              <span className="text-slate-200 font-mono">password123</span>
+            </div>
           </div>
         </div>
 
-        <p className="mt-8 text-center text-sm text-slate-400">
+        <p className="mt-6 text-center text-sm text-slate-400">
           Don't have an account?{" "}
           <Link
             href="/register"

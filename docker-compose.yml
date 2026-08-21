@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: ordo_app
+    ports:
+      - "5000:5000"
+      - "3000:3000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/ordo
+      - JWT_SECRET=ordo_super_secret_jwt_key_development_12345
+      - JWT_EXPIRES_IN=7d
+      - CORS_ORIGIN=*
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo:7.0
+    container_name: ordo_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

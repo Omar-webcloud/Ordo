@@ -4,26 +4,83 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import ProtectedRoute from "../../components/auth/ProtectedRoute";
-import {
-  getStoredUser,
-  logout,
-} from "../../lib/auth";
+import { getStoredUser, logout } from "../../lib/auth";
+import { getProjects, getProjectTasks, createProject } from "../../lib/dataService";
+import type { Project } from "../../types/project";
+import type { Task } from "../../types/task";
+import Button from "../../components/ui/Button";
+import Modal from "../../components/ui/Modal";
+import Input from "../../components/ui/Input";
+import Badge from "../../components/ui/Badge";
 
 export default function DashboardPage() {
   const [userName, setUserName] = useState("User");
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // New project modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const fetchedProjects = await getProjects();
+      setProjects(fetchedProjects);
+
+      // Fetch tasks for each project
+      const tasksPromises = fetchedProjects.map((p) => getProjectTasks(p._id));
+      const tasksArrays = await Promise.all(tasksPromises);
+      const combinedTasks = tasksArrays.flat();
+      setAllTasks(combinedTasks);
+    } catch (err) {
+      console.error("Failed to load dashboard data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const user = getStoredUser();
-
     if (user) {
       setUserName(user.name);
     }
+    loadData();
   }, []);
 
   const handleLogout = () => {
     logout();
     window.location.href = "/login";
   };
+
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectName.trim()) return;
+
+    setError("");
+    setCreating(true);
+    try {
+      await createProject({
+        name: projectName.trim(),
+        description: projectDescription.trim(),
+      });
+      setProjectName("");
+      setProjectDescription("");
+      setIsModalOpen(false);
+      await loadData();
+    } catch (err: any) {
+      setError(err.message || "Failed to create project");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const activeTasks = allTasks.filter((t) => t.status !== "completed");
+  const completedTasks = allTasks.filter((t) => t.status === "completed");
 
   return (
     <ProtectedRoute>
@@ -55,14 +112,22 @@ export default function DashboardPage() {
               >
                 Projects
               </Link>
+              <a
+                href="http://localhost:5000/api/docs"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white hover:bg-slate-800/40"
+              >
+                API Docs ↗
+              </a>
             </nav>
 
             <div className="flex items-center gap-3">
-              <div className="hidden items-center gap-2 rounded-xl border border-slate-700/50 bg-slate-800/30 px-3 py-2 backdrop-blur-sm sm:flex">
+              <div className="hidden items-center gap-2 rounded-xl border border-slate-700/50 bg-slate-800/30 px-3 py-1.5 backdrop-blur-sm sm:flex">
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
                   {userName.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm text-slate-300">{userName}</span>
+                <span className="text-sm text-slate-300 font-medium">{userName}</span>
               </div>
 
               <button
@@ -79,13 +144,22 @@ export default function DashboardPage() {
         {/* Content */}
         <main className="relative z-10 mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
           {/* Page heading */}
-          <div className="mb-10">
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Dashboard
-            </h1>
-            <p className="mt-2 text-slate-400">
-              Welcome back, <span className="text-slate-200 font-medium">{userName}</span>. Here's an overview of your workspace.
-            </p>
+          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Dashboard
+              </h1>
+              <p className="mt-2 text-slate-400">
+                Welcome back, <span className="text-slate-200 font-semibold">{userName}</span>. Here is your current workspace status.
+              </p>
+            </div>
+
+            <Button onClick={() => setIsModalOpen(true)}>
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              New Project
+            </Button>
           </div>
 
           {/* Stats */}
@@ -100,8 +174,8 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Projects</p>
-                <p className="mt-2 text-4xl font-bold tracking-tight text-white">0</p>
-                <p className="mt-2 text-xs text-slate-500">No projects created yet</p>
+                <p className="mt-2 text-4xl font-bold tracking-tight text-white">{projects.length}</p>
+                <p className="mt-2 text-xs text-slate-500">Active workspaces</p>
               </div>
             </div>
 
@@ -115,8 +189,8 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Active Tasks</p>
-                <p className="mt-2 text-4xl font-bold tracking-tight text-white">0</p>
-                <p className="mt-2 text-xs text-slate-500">All caught up!</p>
+                <p className="mt-2 text-4xl font-bold tracking-tight text-white">{activeTasks.length}</p>
+                <p className="mt-2 text-xs text-slate-500">Pending and in-progress</p>
               </div>
             </div>
 
@@ -130,8 +204,8 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Completed</p>
-                <p className="mt-2 text-4xl font-bold tracking-tight text-white">0</p>
-                <p className="mt-2 text-xs text-slate-500">Tasks done this month</p>
+                <p className="mt-2 text-4xl font-bold tracking-tight text-white">{completedTasks.length}</p>
+                <p className="mt-2 text-xs text-slate-500">Tasks finished</p>
               </div>
             </div>
           </div>
@@ -141,7 +215,7 @@ export default function DashboardPage() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-white">Your Projects</h2>
-                <p className="mt-1 text-sm text-slate-500">Projects you're currently working on.</p>
+                <p className="mt-1 text-sm text-slate-500">Projects you are managing or participating in.</p>
               </div>
               <Link
                 href="/dashboard/projects"
@@ -154,24 +228,107 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            {/* Empty state */}
-            <div className="flex min-h-[240px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-700/60 bg-slate-900/20 px-6 py-12 text-center backdrop-blur-sm">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-700/50 bg-slate-800/50">
-                <svg className="h-7 w-7 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-                </svg>
+            {loading ? (
+              <div className="flex h-48 items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/30">
+                <span className="h-6 w-6 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
               </div>
-              <p className="text-sm font-medium text-slate-300">No projects yet</p>
-              <p className="mt-1 text-xs text-slate-500">Create your first project to start organizing tasks.</p>
-              <Link
-                href="/dashboard/projects"
-                className="mt-6 flex h-10 items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-semibold text-white shadow-[0_0_20px_-5px_rgba(59,130,246,0.4)] transition-all hover:bg-blue-500 hover:shadow-[0_0_28px_-5px_rgba(59,130,246,0.6)] hover:-translate-y-px"
-              >
-                Create Project
-              </Link>
-            </div>
+            ) : projects.length === 0 ? (
+              <div className="flex min-h-[240px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-700/60 bg-slate-900/20 px-6 py-12 text-center backdrop-blur-sm">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-700/50 bg-slate-800/50">
+                  <svg className="h-7 w-7 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-slate-300">No projects yet</p>
+                <p className="mt-1 text-xs text-slate-500">Create your first project to start organizing tasks.</p>
+                <Button onClick={() => setIsModalOpen(true)} className="mt-6">
+                  Create Project
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {projects.map((project) => (
+                  <Link
+                    key={project._id}
+                    href={`/dashboard/projects/${project._id}`}
+                    className="group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur-sm transition-all hover:border-slate-700 hover:bg-slate-900/80 hover:-translate-y-0.5"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-lg text-white group-hover:text-blue-400 transition-colors">
+                          {project.name}
+                        </h3>
+                        <Badge variant="blue">Project</Badge>
+                      </div>
+                      <p className="mt-2.5 text-sm text-slate-400 line-clamp-2">
+                        {project.description || "No description provided."}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 flex items-center justify-between border-t border-slate-800/80 pt-4 text-xs text-slate-500">
+                      <span>{project.members?.length || 1} member(s)</span>
+                      <span className="text-blue-400 group-hover:translate-x-0.5 transition-transform">
+                        Open workspace →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </section>
         </main>
+
+        {/* Create Project Modal */}
+        <Modal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Create New Project"
+        >
+          <form onSubmit={handleCreateProject} className="space-y-4">
+            <Input
+              id="projectName"
+              label="Project Name"
+              placeholder="e.g. Website Redesign, Mobile App API"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              required
+            />
+
+            <div>
+              <label
+                htmlFor="projectDescription"
+                className="block text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2"
+              >
+                Description (Optional)
+              </label>
+              <textarea
+                id="projectDescription"
+                rows={3}
+                className="w-full rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-600 backdrop-blur-sm transition-all focus:border-blue-500/70 focus:ring-2 focus:ring-blue-500/20"
+                placeholder="What is this project about?"
+                value={projectDescription}
+                onChange={(e) => setProjectDescription(e.target.value)}
+              />
+            </div>
+
+            {error && (
+              <p className="text-xs text-red-400">{error}</p>
+            )}
+
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" loading={creating}>
+                Create Project
+              </Button>
+            </div>
+          </form>
+        </Modal>
       </div>
     </ProtectedRoute>
   );

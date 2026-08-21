@@ -1,33 +1,42 @@
+import type { User } from "../types/user";
+import type { Project } from "../types/project";
+import type { Task, TaskStatus, TaskPriority } from "../types/task";
+import type { Comment } from "../types/comment";
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   success: boolean;
   message: string;
   data: T;
   statusCode?: number;
 };
 
-type ApiErrorResponse = {
+export type ApiErrorResponse = {
   success: false;
   message: string;
   statusCode?: number;
+  errors?: Array<{ field: string; message: string }>;
 };
 
-// Import user type for type safety
-import type { User } from "../types/user";
-
-class ApiError extends Error {
+export class ApiError extends Error {
   statusCode?: number;
+  errors?: Array<{ field: string; message: string }>;
 
-  constructor(message: string, statusCode?: number) {
+  constructor(
+    message: string,
+    statusCode?: number,
+    errors?: Array<{ field: string; message: string }>
+  ) {
     super(message);
     this.name = "ApiError";
     this.statusCode = statusCode;
+    this.errors = errors;
   }
 }
 
-const request = async <T>(
+export const request = async <T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> => {
@@ -63,7 +72,8 @@ const request = async <T>(
   if (!response.ok || !result.success) {
     throw new ApiError(
       result.message || "Something went wrong",
-      result.statusCode || response.status
+      result.statusCode || response.status,
+      (result as ApiErrorResponse).errors
     );
   }
 
@@ -117,13 +127,13 @@ export const getCurrentUser = async () => {
 
 export const getProjects = async () => {
   return request<{
-    projects: import("../types/project").Project[];
+    projects: Project[];
   }>("/projects");
 };
 
 export const getProject = async (projectId: string) => {
   return request<{
-    project: import("../types/project").Project;
+    project: Project;
   }>(`/projects/${projectId}`);
 };
 
@@ -132,7 +142,7 @@ export const createProject = async (data: {
   description?: string;
 }) => {
   return request<{
-    project: import("../types/project").Project;
+    project: Project;
   }>("/projects", {
     method: "POST",
     body: JSON.stringify(data),
@@ -147,7 +157,7 @@ export const updateProject = async (
   }
 ) => {
   return request<{
-    project: import("../types/project").Project;
+    project: Project;
   }>(`/projects/${projectId}`, {
     method: "PATCH",
     body: JSON.stringify(data),
@@ -171,29 +181,48 @@ export const createTask = async (
   data: {
     title: string;
     description?: string;
-    assignedTo?: string;
-    status?: import("../types/task").TaskStatus;
-    priority?: import("../types/task").TaskPriority;
+    assignedTo?: string | null;
+    status?: TaskStatus;
+    priority?: TaskPriority;
     dueDate?: string | null;
   }
 ) => {
   return request<{
-    task: import("../types/task").Task;
+    task: Task;
   }>(`/projects/${projectId}/tasks`, {
     method: "POST",
     body: JSON.stringify(data),
   });
 };
 
-export const getProjectTasks = async (projectId: string) => {
+export const getProjectTasks = async (
+  projectId: string,
+  params?: {
+    status?: TaskStatus;
+    priority?: TaskPriority;
+    assignedTo?: string;
+    search?: string;
+  }
+) => {
+  const query = new URLSearchParams();
+  if (params?.status) query.append("status", params.status);
+  if (params?.priority) query.append("priority", params.priority);
+  if (params?.assignedTo) query.append("assignedTo", params.assignedTo);
+  if (params?.search) query.append("search", params.search);
+
+  const queryString = query.toString();
+  const endpoint = `/projects/${projectId}/tasks${
+    queryString ? `?${queryString}` : ""
+  }`;
+
   return request<{
-    tasks: import("../types/task").Task[];
-  }>(`/projects/${projectId}/tasks`);
+    tasks: Task[];
+  }>(endpoint);
 };
 
 export const getTask = async (taskId: string) => {
   return request<{
-    task: import("../types/task").Task;
+    task: Task;
   }>(`/tasks/${taskId}`);
 };
 
@@ -203,13 +232,13 @@ export const updateTask = async (
     title?: string;
     description?: string;
     assignedTo?: string | null;
-    status?: import("../types/task").TaskStatus;
-    priority?: import("../types/task").TaskPriority;
+    status?: TaskStatus;
+    priority?: TaskPriority;
     dueDate?: string | null;
   }
 ) => {
   return request<{
-    task: import("../types/task").Task;
+    task: Task;
   }>(`/tasks/${taskId}`, {
     method: "PATCH",
     body: JSON.stringify(data),
@@ -222,4 +251,29 @@ export const deleteTask = async (taskId: string) => {
   });
 };
 
-export { ApiError };
+/*
+|--------------------------------------------------------------------------
+| Comments
+|--------------------------------------------------------------------------
+*/
+
+export const getTaskComments = async (taskId: string) => {
+  return request<{
+    comments: Comment[];
+  }>(`/tasks/${taskId}/comments`);
+};
+
+export const createComment = async (taskId: string, content: string) => {
+  return request<{
+    comment: Comment;
+  }>(`/tasks/${taskId}/comments`, {
+    method: "POST",
+    body: JSON.stringify({ content }),
+  });
+};
+
+export const deleteComment = async (commentId: string) => {
+  return request<null>(`/comments/${commentId}`, {
+    method: "DELETE",
+  });
+};
