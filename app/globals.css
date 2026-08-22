@@ -11,8 +11,6 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -64,4 +62,4 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-}
+}

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import ProtectedRoute from "../../../components/auth/ProtectedRoute";
 import { getProjects, createProject, deleteProject, updateProject } from "../../../lib/dataService";
 import type { Project } from "../../../types/project";
+import Header from "../../../components/layout/Header";
 import Button from "../../../components/ui/Button";
 import Modal from "../../../components/ui/Modal";
 import Input from "../../../components/ui/Input";
@@ -128,45 +129,10 @@ export default function ProjectsPage() {
         <div className="pointer-events-none absolute top-[-15%] left-[-10%] h-[50%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]" />
         <div className="pointer-events-none absolute bottom-[-20%] right-[-10%] h-[50%] w-[40%] rounded-full bg-purple-600/10 blur-[120px]" />
 
-        {/* Header */}
-        <header className="relative z-10 w-full border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-md">
-          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6">
-            <Link
-              href="/"
-              className="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500"
-            >
-              Ordo.
-            </Link>
-
-            <nav className="hidden items-center gap-1 sm:flex">
-              <Link
-                href="/dashboard"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white hover:bg-slate-800/40"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/dashboard/projects"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-white bg-slate-800/60"
-              >
-                Projects
-              </Link>
-            </nav>
-
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-white"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-              </svg>
-              Back to Dashboard
-            </Link>
-          </div>
-        </header>
+        <Header backHref="/dashboard" backLabel="Back to Dashboard" />
 
         {/* Content */}
-        <main className="relative z-10 mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
+        <main className="relative z-10 mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -186,7 +152,7 @@ export default function ProjectsPage() {
           </div>
 
           {/* Search Bar */}
-          <div className="mb-8 max-w-md">
+          <div className="mb-8 w-full max-w-md">
             <Input
               id="searchProjects"
               placeholder="Search projects by name or description..."
@@ -225,18 +191,18 @@ export default function ProjectsPage() {
                 <Link
                   key={project._id}
                   href={`/dashboard/projects/${project._id}`}
-                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur-sm transition-all hover:border-slate-700 hover:bg-slate-900/80 hover:-translate-y-1 shadow-lg hover:shadow-2xl"
+                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-700 hover:bg-slate-900/80 hover:shadow-2xl sm:p-6"
                 >
                   <div>
-                    <div className="flex items-start justify-between gap-2">
-                      <h2 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <h2 className="min-w-0 text-lg font-bold text-white transition-colors group-hover:text-blue-400">
                         {project.name}
                       </h2>
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex shrink-0 items-center gap-1.5 self-start sm:self-auto">
                         <button
                           type="button"
                           onClick={(e) => openEdit(project, e)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200"
                           title="Edit project"
                         >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -247,7 +213,7 @@ export default function ProjectsPage() {
                           type="button"
                           onClick={(e) => handleDelete(project._id, e)}
                           disabled={deletingId === project._id}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
                           title="Delete project"
                         >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -257,10 +223,10 @@ export default function ProjectsPage() {
                       </div>
                     </div>
 
-                    <p className="mt-3 text-sm text-slate-400 leading-relaxed line-clamp-3">
-                      {project.description || "No description provided for this project."}
-                    </p>
-                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400 line-clamp-3">
+                    {project.description || "No description provided for this project."}
+                  </p>
+                </div>
 
                   <div className="mt-6 flex items-center justify-between border-t border-slate-800/80 pt-4 text-xs text-slate-500">
                     <span className="flex items-center gap-1.5">

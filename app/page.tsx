@@ -2,12 +2,12 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen bg-slate-950 text-slate-100 overflow-hidden flex items-center justify-center">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 text-slate-100">
       {/* Background gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-600/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/20 blur-[120px] pointer-events-none" />
+      <div className="pointer-events-none absolute left-[-10%] top-[-10%] h-[42%] w-[42%] rounded-full bg-blue-600/20 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[42%] w-[42%] rounded-full bg-purple-600/20 blur-[120px]" />
       
-      <section className="relative z-10 flex w-full max-w-5xl flex-col items-center justify-center px-4 py-20 sm:px-6 lg:px-8 text-center">
+      <section className="relative z-10 flex w-full max-w-5xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
         {/* Badge */}
         <div className="mb-8">
           <span className="inline-flex items-center rounded-full border border-slate-700/50 bg-slate-800/30 backdrop-blur-sm px-4 py-1.5 text-xs font-medium tracking-wide text-blue-400 shadow-sm transition-colors hover:bg-slate-800/50 hover:text-blue-300">
@@ -17,7 +17,7 @@ export default function HomePage() {
         </div>
 
         {/* Heading */}
-        <h1 className="max-w-4xl text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-white via-slate-200 to-slate-500 pb-2">
+        <h1 className="max-w-4xl bg-gradient-to-br from-white via-slate-200 to-slate-500 bg-clip-text pb-2 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
           Manage your work with{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
             Ordo.
@@ -32,10 +32,10 @@ export default function HomePage() {
         </p>
 
         {/* Buttons */}
-        <div className="mt-10 flex flex-col w-full sm:w-auto sm:flex-row items-center justify-center gap-4 sm:gap-6">
+        <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-6">
           <Link
             href="/register"
-            className="group relative flex h-14 w-full sm:w-auto min-w-[160px] items-center justify-center rounded-xl bg-blue-600 px-8 text-base font-semibold text-white shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] transition-all hover:bg-blue-500 hover:shadow-[0_0_60px_-15px_rgba(37,99,235,0.7)] hover:-translate-y-0.5"
+            className="group relative flex h-14 w-full min-w-[160px] items-center justify-center rounded-xl bg-blue-600 px-8 text-base font-semibold text-white shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] transition-all hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-[0_0_60px_-15px_rgba(37,99,235,0.7)] sm:w-auto"
           >
             Get Started
             <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,7 +45,7 @@ export default function HomePage() {
 
           <Link
             href="/login"
-            className="flex h-14 w-full sm:w-auto min-w-[160px] items-center justify-center rounded-xl border border-slate-700/50 bg-slate-800/20 backdrop-blur-md px-8 text-base font-semibold text-slate-300 transition-all hover:bg-slate-800/60 hover:text-white hover:border-slate-600"
+            className="flex h-14 w-full min-w-[160px] items-center justify-center rounded-xl border border-slate-700/50 bg-slate-800/20 px-8 text-base font-semibold text-slate-300 backdrop-blur-md transition-all hover:border-slate-600 hover:bg-slate-800/60 hover:text-white sm:w-auto"
           >
             Sign In
           </Link>

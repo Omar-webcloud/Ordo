@@ -36,21 +36,21 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-slate-950 px-6 text-slate-100 overflow-hidden">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 text-slate-100 sm:px-6">
       {/* Background gradients */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+      <div className="pointer-events-none absolute left-[-12%] top-[-18%] h-[52%] w-[52%] rounded-full bg-blue-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-[-18%] right-[-12%] h-[52%] w-[52%] rounded-full bg-purple-600/10 blur-[120px]" />
 
-      <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-700/50 bg-slate-900/60 p-8 backdrop-blur-xl shadow-2xl">
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-700/50 bg-slate-900/60 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
         <div className="mb-8 text-center">
           <Link
             href="/"
-            className="inline-block text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 hover:opacity-80 transition-opacity"
+            className="inline-block text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 transition-opacity hover:opacity-80"
           >
             Ordo.
           </Link>
 
-          <h1 className="mt-6 text-2xl font-bold tracking-tight text-white">
+          <h1 className="mt-6 text-2xl font-bold tracking-tight text-white sm:text-[1.9rem]">
             Create your account
           </h1>
 

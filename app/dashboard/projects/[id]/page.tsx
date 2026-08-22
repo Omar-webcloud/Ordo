@@ -13,6 +13,7 @@ import {
 } from "../../../../lib/dataService";
 import type { Project } from "../../../../types/project";
 import type { Task, TaskStatus, TaskPriority } from "../../../../types/task";
+import Header from "../../../../components/layout/Header";
 import Button from "../../../../components/ui/Button";
 import Modal from "../../../../components/ui/Modal";
 import Input from "../../../../components/ui/Input";
@@ -174,47 +175,12 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
         <div className="pointer-events-none absolute top-[-15%] left-[-10%] h-[50%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]" />
         <div className="pointer-events-none absolute bottom-[-20%] right-[-10%] h-[50%] w-[40%] rounded-full bg-purple-600/10 blur-[120px]" />
 
-        {/* Header */}
-        <header className="relative z-10 w-full border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-md">
-          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6">
-            <Link
-              href="/"
-              className="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500"
-            >
-              Ordo.
-            </Link>
-
-            <nav className="hidden items-center gap-1 sm:flex">
-              <Link
-                href="/dashboard"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white hover:bg-slate-800/40"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/dashboard/projects"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-white bg-slate-800/60"
-              >
-                Projects
-              </Link>
-            </nav>
-
-            <Link
-              href="/dashboard/projects"
-              className="flex items-center gap-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-white"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-              </svg>
-              All Projects
-            </Link>
-          </div>
-        </header>
+        <Header backHref="/dashboard/projects" backLabel="All Projects" />
 
         {/* Content */}
-        <main className="relative z-10 mx-auto w-full max-w-7xl px-6 py-10">
+        <main className="relative z-10 mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
           {/* Project Details Banner */}
-          <div className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur-md">
+          <div className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/40 p-4 backdrop-blur-md sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-2">
@@ -241,19 +207,19 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
 
             {/* Filter and Search Toolbar */}
             <div className="mt-6 flex flex-col gap-3 border-t border-slate-800/80 pt-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <input
                   type="text"
                   placeholder="Filter tasks..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="rounded-xl border border-slate-700/60 bg-slate-900/50 px-3.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-xl border border-slate-700/60 bg-slate-900/50 px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:w-64"
                 />
 
                 <select
                   value={filterPriority}
                   onChange={(e) => setFilterPriority(e.target.value)}
-                  className="rounded-xl border border-slate-700/60 bg-slate-900/50 px-3 py-1.5 text-xs text-slate-300 focus:border-blue-500"
+                  className="w-full rounded-xl border border-slate-700/60 bg-slate-900/50 px-3 py-2 text-xs text-slate-300 focus:border-blue-500 sm:w-auto"
                 >
                   <option value="all">All Priorities</option>
                   <option value="high">High Priority</option>
@@ -324,69 +290,68 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
                                   {task.description}
                                 </p>
                               )}
-                            </div>
+                      </div>
 
-                            {/* Task Footer & Actions */}
-                            <div className="mt-4 flex items-center justify-between border-t border-slate-800/60 pt-3 text-xs text-slate-500">
-                              <div className="flex items-center gap-2">
-                                {task.dueDate && (
-                                  <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    {new Date(task.dueDate).toLocaleDateString()}
-                                  </span>
-                                )}
-                              </div>
+                    {/* Task Footer & Actions */}
+                    <div className="mt-4 border-t border-slate-800/60 pt-3">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                          {task.dueDate && (
+                            <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {new Date(task.dueDate).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
 
-                              <div className="flex items-center gap-1">
-                                {/* Quick Move Button */}
-                                {col.status !== "todo" && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => handleStatusChange(task._id, "todo", e)}
-                                    className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-slate-800 text-slate-300 hover:bg-slate-700"
-                                    title="Move to To Do"
-                                  >
-                                    To Do
-                                  </button>
-                                )}
-                                {col.status !== "in_progress" && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => handleStatusChange(task._id, "in_progress", e)}
-                                    className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-blue-900/50 text-blue-300 hover:bg-blue-800/60"
-                                    title="Move to In Progress"
-                                  >
-                                    Progress
-                                  </button>
-                                )}
-                                {col.status !== "completed" && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => handleStatusChange(task._id, "completed", e)}
-                                    className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-green-900/50 text-green-300 hover:bg-green-800/60"
-                                    title="Move to Completed"
-                                  >
-                                    Done
-                                  </button>
-                                )}
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteTask(task._id, e)}
+                          className="inline-flex w-full items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900/40 px-3 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 sm:w-auto"
+                          title="Delete task"
+                        >
+                          Delete
+                        </button>
+                      </div>
 
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleDeleteTask(task._id, e)}
-                                  className="rounded p-1 text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-colors"
-                                  title="Delete task"
-                                >
-                                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                  </svg>
-                                </button>
-                              </div>
-                            </div>
-                          </Link>
-                        ))
-                      )}
+                      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        {col.status !== "todo" && (
+                          <button
+                            type="button"
+                            onClick={(e) => handleStatusChange(task._id, "todo", e)}
+                            className="rounded-lg bg-slate-800 px-2.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700"
+                            title="Move to To Do"
+                          >
+                            To Do
+                          </button>
+                        )}
+                        {col.status !== "in_progress" && (
+                          <button
+                            type="button"
+                            onClick={(e) => handleStatusChange(task._id, "in_progress", e)}
+                            className="rounded-lg bg-blue-900/50 px-2.5 py-1.5 text-xs font-medium text-blue-300 transition-colors hover:bg-blue-800/60"
+                            title="Move to In Progress"
+                          >
+                            Progress
+                          </button>
+                        )}
+                        {col.status !== "completed" && (
+                          <button
+                            type="button"
+                            onClick={(e) => handleStatusChange(task._id, "completed", e)}
+                            className="rounded-lg bg-green-900/50 px-2.5 py-1.5 text-xs font-medium text-green-300 transition-colors hover:bg-green-800/60"
+                            title="Move to Completed"
+                          >
+                            Done
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              )}
                     </div>
                   </div>
                 );

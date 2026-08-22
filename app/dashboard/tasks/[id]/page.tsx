@@ -16,6 +16,7 @@ import {
 import { getStoredUser } from "../../../../lib/auth";
 import type { Task, TaskStatus, TaskPriority } from "../../../../types/task";
 import type { Comment } from "../../../../types/comment";
+import Header from "../../../../components/layout/Header";
 import Button from "../../../../components/ui/Button";
 import Badge from "../../../../components/ui/Badge";
 import Input from "../../../../components/ui/Input";
@@ -183,45 +184,10 @@ export default function TaskDetailPage({ params }: TaskPageProps) {
         <div className="pointer-events-none absolute top-[-15%] left-[-10%] h-[50%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]" />
         <div className="pointer-events-none absolute bottom-[-20%] right-[-10%] h-[50%] w-[40%] rounded-full bg-purple-600/10 blur-[120px]" />
 
-        {/* Header */}
-        <header className="relative z-10 w-full border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-md">
-          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6">
-            <Link
-              href="/"
-              className="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500"
-            >
-              Ordo.
-            </Link>
-
-            <nav className="hidden items-center gap-1 sm:flex">
-              <Link
-                href="/dashboard"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white hover:bg-slate-800/40"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/dashboard/projects"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white hover:bg-slate-800/40"
-              >
-                Projects
-              </Link>
-            </nav>
-
-            <Link
-              href={projectId ? `/dashboard/projects/${projectId}` : "/dashboard/projects"}
-              className="flex items-center gap-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-white"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-              </svg>
-              Back to Project
-            </Link>
-          </div>
-        </header>
+        <Header backHref={projectId ? `/dashboard/projects/${projectId}` : "/dashboard/projects"} backLabel="Back to Project" />
 
         {/* Content */}
-        <main className="relative z-10 mx-auto w-full max-w-5xl px-6 py-10">
+        <main className="relative z-10 mx-auto w-full max-w-5xl px-4 py-10 sm:px-6">
           {loading ? (
             <div className="flex h-64 items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/30">
               <span className="h-6 w-6 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
@@ -236,14 +202,14 @@ export default function TaskDetailPage({ params }: TaskPageProps) {
           ) : (
             <div className="space-y-8">
               {/* Task Header Card */}
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur-md">
-                <div className="mb-4 flex items-center justify-between border-b border-slate-800/80 pb-4">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 backdrop-blur-md sm:p-6">
+                <div className="mb-4 flex flex-col gap-4 border-b border-slate-800/80 pb-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono text-slate-500">TASK-{taskId.slice(-6)}</span>
                     {getStatusBadge(task.status)}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {!isEditing ? (
                       <Button
                         variant="secondary"
@@ -319,9 +285,9 @@ export default function TaskDetailPage({ params }: TaskPageProps) {
               </div>
 
               {/* Task Properties & Metadata */}
-              <div className="grid gap-4 sm:grid-cols-3">
-                {/* Status selector */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-4">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {/* Status selector */}
+                  <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-4">
                   <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">
                     Status
                   </p>
@@ -371,7 +337,7 @@ export default function TaskDetailPage({ params }: TaskPageProps) {
               </div>
 
               {/* Comments Section */}
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur-md">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 backdrop-blur-md sm:p-6">
                 <div className="mb-6 flex items-center justify-between">
                   <h2 className="text-lg font-bold text-white">
                     Comments ({comments.length})
@@ -422,11 +388,11 @@ export default function TaskDetailPage({ params }: TaskPageProps) {
                           </div>
 
                           <div className="flex-1">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                               <span className="font-semibold text-xs text-slate-200">
                                 {authorName}
                               </span>
-                              <div className="flex items-center gap-2">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-[11px] text-slate-500">
                                   {new Date(comment.createdAt).toLocaleDateString()} at{" "}
                                   {new Date(comment.createdAt).toLocaleTimeString([], {
@@ -438,7 +404,7 @@ export default function TaskDetailPage({ params }: TaskPageProps) {
                                   <button
                                     type="button"
                                     onClick={() => handleDeleteComment(comment._id)}
-                                    className="text-slate-500 hover:text-red-400 transition-colors text-xs"
+                                    className="text-xs text-slate-500 transition-colors hover:text-red-400"
                                     title="Delete comment"
                                   >
                                     ✕

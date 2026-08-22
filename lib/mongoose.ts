@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const MONGO_URI = process.env.MONGO_URI as string;
 
-if (!MONGO_URI) {
-  throw new Error("Please define the MONGO_URI environment variable");
-}
-
 // Cache connection across serverless function invocations
 let cached = (global as any).__mongoose;
 
@@ -14,6 +10,10 @@ if (!cached) {
 }
 
 export async function connectDB() {
+  if (!MONGO_URI) {
+    throw new Error("Please define the MONGO_URI environment variable");
+  }
+
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
