@@ -10,6 +10,13 @@ type Endpoint = {
 
 const endpointGroups: Array<{ title: string; description: string; endpoints: Endpoint[] }> = [
   {
+    title: "Service",
+    description: "Confirm that the API is reachable and find the documentation route.",
+    endpoints: [
+      { method: "GET", path: "/api/v1", description: "Return API version and service status." },
+    ],
+  },
+  {
     title: "Authentication",
     description: "Create an account, exchange credentials for a token, and read the current user.",
     endpoints: [
@@ -107,7 +114,7 @@ export default function ApiDocsPage() {
           </p>
           <pre className="mt-5 overflow-x-auto rounded-xl border border-white/10 bg-slate-950 p-4 text-xs leading-6 text-sky-200"><code>Authorization: Bearer &lt;token&gt;</code></pre>
           <p className="mt-5 text-xs leading-5 text-slate-400">
-            Responses use a consistent envelope with <code className="text-slate-200">success</code>, <code className="text-slate-200">message</code>, and <code className="text-slate-200">data</code> fields.
+            Successful responses include <code className="text-slate-200">success</code>, <code className="text-slate-200">message</code>, and <code className="text-slate-200">data</code>. Errors include a message and status code.
           </p>
         </aside>
       </section>
